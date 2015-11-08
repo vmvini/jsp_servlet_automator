@@ -4,6 +4,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -34,7 +36,7 @@ public class Automator {
         folderOperations.removeInsideFiles(projectInfo.getCompiledServletFolderPath());
         List<String> filePaths = folderOperations.getAllFilesOfExtension(".java", projectInfo.getServletSourcePath());
         for(String f : filePaths){
-            systemCommands.compileServlet(f);
+            systemCommands.compileServlet(Paths.get(f));
         }
 
     }
@@ -66,7 +68,9 @@ public class Automator {
 
     public void sendProjectToTomcatFolder() throws IOException{
 
-        folderOperations.copyFolderToDirectory(projectInfo.getProjectPath(), projectInfo.getTomcatWebAppsPath()+ "\\\\" + projectInfo.getProjectName());
+        Path from = projectInfo.getProjectPath();
+        Path to = projectInfo.getTomcatWebAppsPath().resolve(projectInfo.getProjectName());
+        folderOperations.copyFolderToDirectory(projectInfo.getProjectPath(), projectInfo.getTomcatWebAppsPath().resolve(projectInfo.getProjectName()));
     }
 
 

@@ -1,6 +1,7 @@
 package jsp_servlet_automator;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -8,21 +9,21 @@ import java.util.List;
  */
 public interface FolderOperations {
 
-    void copyFileToDirectory(String filePath, String receiverDirectory);
+    void copyFileToDirectory(Path filePath, Path receiverDirectory);
 
-    void copyFolderToDirectory(String folderPath, String receiverDirectory) throws IOException;
+    void copyFolderToDirectory(Path folderPath, Path receiverDirectory) throws IOException;
 
-    void removeFolder(String folderPath) throws IOException, InterruptedException;
+    void removeFolder(Path folderPath) throws IOException, InterruptedException;
 
-    List<String> getAllDirectoryFilePaths(String directory);
+    List<String> getAllDirectoryFilePaths(Path directory);
 
-    List<String> getAllFilesOfExtension(String extension, String directory);
+    List<String> getAllFilesOfExtension(String extension, Path directory);
 
-    void createIfNotExist(String path) throws IOException;
+    void createIfNotExist(Path path) throws IOException;
 
-    String getReativePathTo(String filePath, String relativeTo );
+    String getReativePathTo(Path filePath, Path relativeTo );
 
-    void removeInsideFiles(String filePath)throws IOException;
+    void removeInsideFiles(Path filePath)throws IOException;
 
     String removeExtension(String name);
 

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -18,18 +19,18 @@ public class SystemCommandsImpl implements SystemCommands {
        this.projectInfo = projectInfo;
     }
 
-    public void compileServlet(String servletPath) throws IOException, InterruptedException{
+    public void compileServlet(Path servletPath) throws IOException, InterruptedException{
         String jarsPaths = "";
         String servletPackagesPath = "";
         FolderOperations fo = new FolderOperationsImpl();
         servletPackagesPath = fo.getReativePathTo(servletPath, projectInfo.getProjectPath());
 
-        String targetDirectory = projectInfo.getClassesFolderPath();
+        Path targetDirectory = projectInfo.getClassesFolderPath();
         fo.createIfNotExist(targetDirectory);
         for(String f : fo.getAllFilesOfExtension(".jar", projectInfo.getLibraryFolderPath())){
             jarsPaths = jarsPaths + ";" + f;
         }
-        String command = "javac -cp " + projectInfo.getClassesFolderPath() + jarsPaths + " -d " + targetDirectory + " " + servletPath;
+        String command = "javac -cp " + projectInfo.getClassesFolderPath().toString()+ jarsPaths + " -d " + targetDirectory.toString() + " " + servletPath.toString();
 
         Process process = Runtime.getRuntime().exec(command);
         //show error messages
@@ -43,15 +44,15 @@ public class SystemCommandsImpl implements SystemCommands {
 
 
         //verificando se o servlet compilado est� pronto.
-        File servlet = new File(servletPath);
+        File servlet = servletPath.toFile();
         String servletName = fo.removeExtension(servlet.getName());
 
-        File compiledFile = new File(targetDirectory + servletPackagesPath +"\\"+ servletName + ".class");
-
-        while(!compiledFile.canWrite()){
-
-             Thread.sleep(1000);
-        }
+        File compiledFile = new File(targetDirectory.resolve(servletPackagesPath).resolve(servletName).toString()+".class");
+        //Não consegui achar o problema nessa parte, não entendi muito bem o comando.
+//        while(!compiledFile.canWrite()){
+//
+//             Thread.sleep(1000);
+//        }
         /*
         * javac -cp library;jarPath1;jarPath2 -d targetDirectory  servletPath
         */

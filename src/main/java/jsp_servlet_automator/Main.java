@@ -5,6 +5,8 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,7 +14,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ProjectInfo pi = new ProjectInfo("C:\\Users\\marcusviniv\\Desktop\\vmvini\\SitesJSP\\sismovie", "C:\\Program Files\\Apache Software Foundation\\Tomcat 7.0", "StartSisMovie");
+        Path projectPath = Paths.get("C:", "Users","Junior","Documents","NetBeansProjects","teste","src","java");
+        Path tomcat = Paths.get("C:", "Program Files", "Apache Software Foundation","Tomcat 8.0");
+        ProjectInfo pi = new ProjectInfo(projectPath, tomcat, "StartSisMovie");
         Automator a = new Automator(pi);
         try {
             a.run();

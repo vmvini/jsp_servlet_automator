@@ -1,46 +1,46 @@
 package jsp_servlet_automator;
 
+import java.nio.file.Path;
+
 /**
  * Created by marcusviniv on 09/10/2015.
  */
 public class ProjectInfo {
 
-    private String projectPath;
+    private Path projectPath;
 
-    private String tomcatPath;
+    private Path tomcatPath;
 
     private String homepage;
 
-    public ProjectInfo(String projectPath, String tomcatPath, String homepage){
+    public ProjectInfo(Path projectPath, Path tomcatPath, String homepage){
         this.projectPath = projectPath;
         this.tomcatPath = tomcatPath;
         this.homepage = homepage;
     }
 
-    public String getTomcatPath(){
+    public Path getTomcatPath(){
         return tomcatPath;
     }
 
-    public String getWebXmlFilePath(){
-        return getProjectPath() + "\\WEB-INF\\web.xml";
+    public Path getWebXmlFilePath(){
+        return getProjectPath().resolve("WEB-INF").resolve("web.xml");
     }
 
-    public String getTomcatWebAppsPath(){
-        return tomcatPath + "\\webapps";
+    public Path getTomcatWebAppsPath(){
+        return tomcatPath.resolve("webapps");
     }
 
     public String getProjectName(){
-        String[] a = projectPath.split("\\\\");
-        int lastIndex = a.length -1;
-        return a[lastIndex];
+        return projectPath.getFileName().toString();
 
     }
 
-    public String getTomcatProjectPath(){
-        return getTomcatWebAppsPath() +"\\"+ getProjectName();
+    public Path getTomcatProjectPath(){
+        return getTomcatWebAppsPath().resolve(getProjectName());
     }
 
-    public String getProjectPath(){
+    public Path getProjectPath(){
         return projectPath;
     }
 
@@ -48,24 +48,24 @@ public class ProjectInfo {
         return homepage;
     }
 
-    public String getServletSourcePath(){
-        return this.projectPath + "\\servlets";
+    public Path getServletSourcePath(){
+        return this.projectPath.resolve("servlets");
     }
 
-    public String getCompiledServletFolderPath(){
-        return this.projectPath + "\\WEB-INF\\classes\\servlets";
+    public Path getCompiledServletFolderPath(){
+        return this.projectPath.resolve("WEB-INF").resolve("classes").resolve("servlets");
     }
 
-    public String getLibraryFolderPath(){
-        return this.projectPath + "\\WEB-INF\\lib";
+    public Path getLibraryFolderPath(){
+        return this.projectPath.resolve("WEB-INF").resolve("lib");
     }
 
-    public String getClassesFolderPath(){
-        return this.projectPath + "\\WEB-INF\\classes";
+    public Path getClassesFolderPath(){
+        return this.projectPath.resolve("WEB-INF").resolve("classes");
     }
 
-    public String getPagesPath(){
-        return this.projectPath + "\\pages";
+    public Path getPagesPath(){
+        return this.projectPath.resolve("pages");
     }
 
 }

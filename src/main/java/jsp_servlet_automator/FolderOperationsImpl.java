@@ -2,6 +2,7 @@ package jsp_servlet_automator;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,20 +13,20 @@ import org.apache.commons.io.FileUtils;
  */
 public class FolderOperationsImpl implements FolderOperations {
 
-    public void copyFileToDirectory(String filePath, String receiverDirectory){
+    public void copyFileToDirectory(Path filePath, Path receiverDirectory){
     }
 
-    public void copyFolderToDirectory(String folderPath, String receiverDirectory) throws IOException{
+    public void copyFolderToDirectory(Path folderPath, Path receiverDirectory) throws IOException{
         createIfNotExist(receiverDirectory);
-        FileUtils.copyDirectory(new File(folderPath), new File(receiverDirectory));
+        FileUtils.copyDirectory(folderPath.toFile(), receiverDirectory.toFile());
     }
 
-    public void removeFolder(String folderPath) throws IOException, InterruptedException{
-        File file = new File(folderPath);
+    public void removeFolder(Path folderPath) throws IOException, InterruptedException{
+        File file = folderPath.toFile();
 
         while(file.exists()){
             try {
-                FileUtils.forceDelete(new File(folderPath));
+                FileUtils.forceDelete(file);
             }
             catch(IOException e){
                 System.out.println("erro ao deletar, deletar novamente em alguns segundos.");
@@ -38,24 +39,26 @@ public class FolderOperationsImpl implements FolderOperations {
     }
 
 
-    public List<String> getAllDirectoryFilePaths(String directory){
-        File folder = new File(directory);
-        List<String> paths = new ArrayList<String>();
+    public List<String> getAllDirectoryFilePaths(Path directory){
+        File folder = directory.toFile();
+        List<String> paths = new ArrayList<>();
         File[]  files = folder.listFiles();
-        for(File f : files){
-            if (f.isFile())
-                paths.add(f.getAbsolutePath());
-            else{
-                List<String> filePaths = getAllDirectoryFilePaths(f.getAbsolutePath());
-                paths.addAll(filePaths);
+        if(files != null){
+            for(File f : files){
+                if (f.isFile())
+                    paths.add(f.getAbsolutePath());
+                else{
+                    List<String> filePaths = getAllDirectoryFilePaths(f.toPath().toAbsolutePath());
+                    paths.addAll(filePaths);
+                }
             }
         }
         return paths;
     }
 
-    public List<String> getAllFilesOfExtension(String extension, String directory){
+    public List<String> getAllFilesOfExtension(String extension, Path directory){
         List<String> allFiles = getAllDirectoryFilePaths(directory);
-        List<String> extensioFiles = new ArrayList<String>();
+        List<String> extensioFiles = new ArrayList<>();
         for(String f : allFiles){
             if(f.contains(extension)){
                 extensioFiles.add(f);
@@ -65,33 +68,27 @@ public class FolderOperationsImpl implements FolderOperations {
     }
 
 
-    public void createIfNotExist(String path) throws IOException{
-        File folder = new File(path);
+    public void createIfNotExist(Path path) throws IOException{
+        File folder = path.toFile();
         if(!folder.exists()){
             FileUtils.forceMkdir(folder);
         }
     }
 
-    public String getReativePathTo(String filePath, String relativeTo ){
-        //filePath = C:\Users\marcusviniv\Desktop\vmvini\SitesJSP\controledesalas\servlets\register\arquivo.java
-
-        //relativeTo = C:\Users\marcusviniv\Desktop\vmvini\SitesJSP\controledesalas\servlets\
-
-        File file = new File(filePath);
-        File parent = file.getParentFile();
-        StringBuilder parentPath = new StringBuilder(parent.getAbsolutePath());
-
-        return parentPath.delete(0, relativeTo.length()).toString();
+    public String getReativePathTo(Path filePath, Path relativeTo ){
+        return relativeTo.relativize(filePath).getParent().toString();
     }
 
 
-    public void removeInsideFiles(String filePath)throws IOException{
-        if(new File(filePath).exists())
-            FileUtils.cleanDirectory(new File(filePath));
+    public void removeInsideFiles(Path filePath)throws IOException{
+        if(filePath.toFile().exists())
+            FileUtils.cleanDirectory(filePath.toFile());
     }
 
     public String removeExtension(String name){
         String r[] = name.split("\\.");
         return r[0];
     }
+    
+    
 }

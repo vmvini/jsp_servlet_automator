@@ -14,6 +14,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * Created by marcusviniv on 09/10/2015.
@@ -44,7 +45,7 @@ public class XMLOperationsImpl implements XMLOperations {
         String finalServletName;
         File servletFile = new File(servletName);
         finalServletName = folderOperations.removeExtension(servletFile.getName());
-        String finalServletClass = folderOperations.getReativePathTo(servletName, projectInfo.getClassesFolderPath());
+        String finalServletClass = folderOperations.getReativePathTo(Paths.get(servletName), projectInfo.getClassesFolderPath());
         finalServletClass = StringOperations.changeSlashToDots(finalServletClass+"\\"+folderOperations.removeExtension(servletFile.getName()));
 
         Element servlet = xmlFile.createElement("servlet");
@@ -82,7 +83,7 @@ public class XMLOperationsImpl implements XMLOperations {
 
 
     private void removeExistentXml() throws IOException, InterruptedException{
-        File xmlFile = new File(projectInfo.getWebXmlFilePath());
+        File xmlFile = projectInfo.getWebXmlFilePath().toFile();
         if( xmlFile.exists())
             folderOperations.removeFolder(projectInfo.getWebXmlFilePath());
     }
@@ -106,7 +107,7 @@ public class XMLOperationsImpl implements XMLOperations {
         Transformer transformer = transformerFactory.newTransformer();
         xmlFile.appendChild(rootElement);
         DOMSource source = new DOMSource(xmlFile);
-        StreamResult result = new StreamResult(new File(projectInfo.getWebXmlFilePath()));
+        StreamResult result = new StreamResult(projectInfo.getWebXmlFilePath().toFile());
         transformer.transform(source, result);
 
     }
